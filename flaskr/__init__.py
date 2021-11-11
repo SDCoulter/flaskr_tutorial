@@ -31,7 +31,7 @@ def create_app(test_config=None):
         app.config.from_mapping(test_config)
 
     # Ensure the instance folder exists.
-    # Not done automatically by FLask - needed for SQLite database.
+    # Not done automatically by Flask - needed for SQLite database.
     try:
         os.makedirs(app.instance_path)
     except OSError:
