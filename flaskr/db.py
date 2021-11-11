@@ -38,3 +38,22 @@ def close_db(e=None):
 
     if db is not None:
         db.close()
+
+# Initialize database function.
+def init_db():
+    # Returns a database connection. Used to execute commands and
+    # read from the file.
+    db = get_db()
+
+    # Opens a file relative to flaskr/ package (our schema).
+    with current_app.open_resource('schema.sql') as f:
+        db.executescript(f.read().decode('utf-8'))
+
+# Defines a command link command called 'init-db' that calls the init_db
+# function and shows a success message to the user.
+@click.command('init-db')
+@with_appcontext
+def init_db_command():
+    """Clear the exisiting data and create new tables."""
+    init_db()
+    click.echo('Initialized the database.')
