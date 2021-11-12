@@ -47,4 +47,9 @@ def create_app(test_config=None):
     # Pass the app to the database to register the other functions.
     db.init_app(app)
 
+    # Import the auth blueprint to register it with the app.
+    from . import auth
+    # Pass in the blueprint to the app.
+    app.register_blueprint(auth.bp)
+
     return app
