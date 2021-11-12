@@ -42,4 +42,9 @@ def create_app(test_config=None):
     def hello():
         return 'Hello, World!'
 
+    # Import and call the functions in db.py in this factory.
+    from . import db
+    # Pass the app to the database to register the other functions.
+    db.init_app(app)
+
     return app
