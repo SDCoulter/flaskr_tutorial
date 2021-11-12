@@ -103,9 +103,51 @@ def login():
             session.clear()
             session['user_id'] = user['id']
             # Will be available on subsequent requests.
-            
+
             return redirect(url_for('index'))
 
         flash(error)
 
     return render_template('auth/login.html')
+
+# Once the user's id is stored in the session, it will be available on subsequent requests.
+# At the beginning of each request, if logged in, user information should be loaded and
+# made available to other views.
+
+# Registers a function to run before view function, no matter requested URL.
+@bp.before_app_request
+def load_logged_in_user():
+    # Checks if user id is stored in the session and gets data from db if so.
+    user_id = session.get('user_id')
+
+    if user_id is None:
+        g.user = None
+    else:
+        # Store the data in g.user if so, which lasts the length of the request.
+        g.user = get_db().execute(
+            'SELECT * FROM user WHERE id = ?', (user_id,)
+        ).fetchone()
+
+# Create logout view to remove user from the session.
+@bp.route('/logout')
+def logout():
+    # Clear the session if this route is viewed.
+    session.clear()
+    # Return home.
+    return redirect(url_for('index'))
+
+# Create decorator for further authentification - check this for each view it's applied to.
+# Returns a new view function that wraps the original view it is applied to.
+def login_required(view):
+    @functools.wraps(view):
+    def wrapped_view(**kwargs):
+        # Checks if a user is loaded and redirects to the home page otherwise.
+        if g.user is NOne:
+            return redirect(url_for('auth.login'))
+
+        # Wraps the original view.
+        # If a user is loaded the original view is called and continues normally.
+        return view(**kwargs)
+
+    # Runs and returns the function above.
+    return wrapped_view
