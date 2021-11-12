@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <!-- Use block to insert unique title for page -->
+    <!-- overridden by other templates -->
+    <title>{% block title %}{% endblock %} - Flaskr</title>
+    <!-- insert static style - file in flaskr/styles folder -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+
+  <body>
+
+    <!-- Navigation bar -->
+    <nav>
+      <!-- name of app - change to formula 1 when moving on -->
+      <h1>Flaskr</h1>
+
+      <!-- items in nav bar - pull session data if available --->
+      <ul>
+        {% if g.user %}
+          <li><span>{{ g.user['username'] }}</span>
+          <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
+        <!-- else give user register/login options -->
+        {% else %}
+          <li><a href="{{ url_for('auth.register') }}">Register</a>
+          <li><a href="{{ url_for('auth.login') }}">Log In</a>
+        {% endif %}
+      </ul>
+
+    </nav>
+
+    <!-- content section -->
+    <section class="content">
+      <!-- store page header - variable unique to each page -->
+      <!-- overridden by other templates -->
+      <header>
+        {% block header %}{% endblock %}
+      </header>
+      <!-- show any error messages stored in reg/login views -->
+      {% for message in get_flashed_messages() %}
+        <div class="flash">{{ message }}</div>
+      {% endfor %}
+      <!-- content of each page goes here -->
+      <!-- overridden by other templates -->
+      {% block content %}{% endblock %}
+    </section>
+
+  </body>
+</html>
