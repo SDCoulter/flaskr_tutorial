@@ -18,7 +18,7 @@ from flaskr.db import get_db
 
 
 # Create a blueprint class.
-bp = Blurprint('auth', __name__, url_prefix='/auth')
+bp = Blueprint('auth', __name__, url_prefix='/auth')
 # Creates Blueprint named auth. The bp needs to know where it's define, so
 # __name__ is passed as second argument. And we associate a URL prefix.
 
@@ -139,7 +139,7 @@ def logout():
 # Create decorator for further authentification - check this for each view it's applied to.
 # Returns a new view function that wraps the original view it is applied to.
 def login_required(view):
-    @functools.wraps(view):
+    @functools.wraps(view)
     def wrapped_view(**kwargs):
         # Checks if a user is loaded and redirects to the home page otherwise.
         if g.user is NOne:
