@@ -42,6 +42,35 @@ def index():
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required
 def create():
+    # Check that a form has been submitted.
     if request.method == 'POST':
-        # Get connection to the database.
-        db = get_db()
+        # Store submitted data.
+        title = request.form['title']
+        body = request.form['body']
+        error = None
+
+        # Validation.
+        if not title:
+            error = 'Title is required.'
+        if not body:
+            error = 'Blog post content is required.'
+
+        # Check no errors, flash otherwise, as in previous.
+        if error is not None:
+            flash(error)
+        else:
+            # Request db connection.
+            db = get_db()
+            # Add the new post to the database.
+            db.execute(
+                'INSERT INTO post (title, body, author_id)'
+                ' VALUES (?, ?, ?)',
+                (title, body, g.user['id'])
+            )
+            # Commit the changes to the database (data modification).
+            db.commit()
+            # Return user to homepage to see their new post.
+            return redirect(url_for('blog.index'))
+
+    # If there is no POST method, render the template empty.    
+    return render_template('blog/create.html')
