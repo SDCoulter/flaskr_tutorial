@@ -7,7 +7,6 @@
 {% block content %}
   <form method="post">
     <label for="title">Title</label>
-    <!-- add value for future editing (if available) -->
     <input name="title" id="title" value="{{ request.form['title'] }}" required>
     <label for="body">body</label>
     <textarea type="body" id="body" required>{{ request.form['body'] }}</textarea>
