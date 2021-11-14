@@ -52,8 +52,6 @@ def create():
         # Validation.
         if not title:
             error = 'Title is required.'
-        if not body:
-            error = 'Blog post content is required.'
 
         # Check no errors, flash otherwise, as in previous.
         if error is not None:
@@ -119,8 +117,6 @@ def update(id):
         # Validation.
         if not title:
             error = 'Title is required.'
-        if not body:
-            error = 'Blog post content is required.'
 
         if error is not None:
             flash(error)
