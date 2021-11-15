@@ -70,3 +70,63 @@ def test_exists_required(client, auth, path):
     # Try to pass the post method to a non-existant blog item, should
     # return a Not Found error.
     assert client.post(path).status_code == 404
+
+# Create a test for the user's ability to create a post (add to db).
+def test_create(client, auth, app):
+    # Have the test user login.
+    auth.login()
+    # Test access to the create URL for user.
+    assert client.get('/create').status_code == 200
+    # Perform post method on the create URL to add a blog item to the db.
+    client.post('/create', data={'title': 'created', 'body': ''})
+
+    # In the app context, connect to the db to check the existence of the
+    # created post.
+    with app.app_context():
+        db = get_db()
+        # Get a count of the posts in the database, should now be 2.
+        count = db.execute('SELECT COUNT(id) FROM post').fetchone()[0]
+        assert count == 2
+
+# Test for user's ability to update a created post.
+def test_update(client, auth, app):
+    auth.login()
+    # Check user's ability to update the post.
+    assert client.get('/1/update').status_code == 200
+    # Run the post method to update the post.
+    client.post('/1/update', data={'title': 'updated', 'body': ''})
+
+    # Check the db to see if the post was successfully updated.
+    with app.app_conext():
+        db = get_db()
+        post = db.execute('SELET * FROM post WHERE id = 1').fetchone()
+        # Check the post title is the string 'updated'.
+        assert post['title'] == 'updated'
+
+# Check a post cannot be created or updated with invalid data.
+@pytest.mark.parametrize('path', (
+    '/create',
+    '/1/update',
+))
+def test_create_update_validate(client, auth, path):
+    auth.login()
+    # Try to create/edit the title to be a blank string and record response.
+    response = client.post(path, data={'title': '', 'body': ''})
+    # Check existence of the error string.
+    assert b'Title is required.' in response.data
+
+# Check the user is able to delete the post and redirected to the
+# index page after.
+def test_delete(client, auth, app):
+    auth.login()
+    # Action the deletion of the test post.
+    response = client.post('/1/delete')
+    # Check user is redirected.
+    assert response.headers['Location'] == 'http://localhost'
+
+    # Check the post has been removed from the database.
+    with app.app_context():
+        db = get_db()
+        post = db.execute('SELECT * FROM post WHERE id = 1').fetchone()
+        # Check no post was returned.
+        assert post is None
