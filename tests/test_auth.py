@@ -34,7 +34,7 @@ def test_register(client, app):
 # Tells pytest to run the same test funxtion with different arguments.
 # Using it to test different invalid inputs.
 @pytest.mark.parametrize(('username', 'password', 'message'), (
-    ('', '', b'Username is required.'),
+    ('', 'a', b'Username is required.'),
     ('a', '', b'Password is required.'),
     ('test', 'test', b'already registered'),
 ))
