@@ -65,18 +65,29 @@ def runner(app):
 # POST requests to the views with the client. We will use a fixture to pass
 # it the client for each test.
 class AuthActions(object):
+    # Needed in class creation, sets internal variables referring to
+    # the instance, rather than globally.
     def __init__(self, client):
+        # This would be the test client.
         self._client = client
 
+    # Create a login function to test the log in as a test user.
+    # This test login was added in the SQL test data file.
     def login(self, username='test', password='test'):
+        # Pass a POST method to the URL /auth/login to the test app, with the
+        # test login data and return the response.
         return self._client.post(
             '/auth/login',
             data={'username': username, 'password': password}
         )
 
+    # Similarly, pass the get method to the test app to get the data from
+    # testing access to the /auth/logout URL.
     def logout(self):
         return self._client.get('/auth/logout')
 
+# Create a fixture to call (pass in) as with client, but we pass in the
+# test app client when called. This is in turn passed into the AuthActions obj.
 @pytest.fixture
 def auth(client):
     return AuthActions(client)
