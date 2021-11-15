@@ -59,3 +59,24 @@ def runner(app):
 # Pytest uses fixtures by matching their function names with the names
 # of arguments in the test funtions.
 # We will pass in the name of the fixtures to the test functions.
+
+
+# Create a class with methods to test authentification. The class will make
+# POST requests to the views with the client. We will use a fixture to pass
+# it the client for each test.
+class AuthActions(object):
+    def __init__(self, client):
+        self._client = client
+
+    def login(self, username='test', password='test'):
+        return self._client.post(
+            '/auth/login',
+            data={'username': username, 'password': password}
+        )
+
+    def logout(self):
+        return self._client.get('/auth/logout')
+
+@pytest.fixture
+def auth(client):
+    return AuthActions(client)
