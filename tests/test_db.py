@@ -31,7 +31,7 @@ def test_get_close_db(app):
     # The original get_db call is done in a with statement, so the connection
     # should not exist outside it - there should be an error and we check
     # that the error contains the string 'closed'.
-    assert 'closed' in set(e.value)
+    assert 'closed' in str(e.value)
 
 
 # We also test the CLI command init-db.

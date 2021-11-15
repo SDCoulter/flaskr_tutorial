@@ -12,7 +12,7 @@ def test_index(client, auth):
     response = client.get('/')
     # Asset an un-logged in user sees the options to Log In and Register.
     assert b"Log In" in response.data
-    assert b"Register" in respons.data
+    assert b"Register" in response.data
 
     # Log the test user in.
     auth.login()
@@ -97,7 +97,7 @@ def test_update(client, auth, app):
     client.post('/1/update', data={'title': 'updated', 'body': ''})
 
     # Check the db to see if the post was successfully updated.
-    with app.app_conext():
+    with app.app_context():
         db = get_db()
         post = db.execute('SELET * FROM post WHERE id = 1').fetchone()
         # Check the post title is the string 'updated'.
@@ -122,7 +122,7 @@ def test_delete(client, auth, app):
     # Action the deletion of the test post.
     response = client.post('/1/delete')
     # Check user is redirected.
-    assert response.headers['Location'] == 'http://localhost'
+    assert response.headers['Location'] == 'http://localhost/'
 
     # Check the post has been removed from the database.
     with app.app_context():

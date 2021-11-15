@@ -28,7 +28,7 @@ def test_register(client, app):
         # Run a search in the test db to return the newly created user 'a'.
         # Assert that the respons is not None. (ie does exist.)
         assert get_db().execute(
-            "SELET * FROM user WHERE username = 'a'",
+            "SELECT * FROM user WHERE username = 'a'",
         ).fetchone() is not None
 
 # Tells pytest to run the same test funxtion with different arguments.
@@ -60,7 +60,7 @@ def test_login(client, auth):
     # We use the test login and password as we know this user is in the db.
     response = auth.login()
     # Once logged in we check the test redirects to the index.
-    assert response.headers['Location'] == 'http://localhost'
+    assert response.headers['Location'] == 'http://localhost/'
 
     # This allows us to access the context variables (session) after the
     # response is returned.
