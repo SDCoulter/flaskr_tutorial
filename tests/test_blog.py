@@ -99,7 +99,7 @@ def test_update(client, auth, app):
     # Check the db to see if the post was successfully updated.
     with app.app_context():
         db = get_db()
-        post = db.execute('SELET * FROM post WHERE id = 1').fetchone()
+        post = db.execute('SELECT * FROM post WHERE id = 1').fetchone()
         # Check the post title is the string 'updated'.
         assert post['title'] == 'updated'
 
